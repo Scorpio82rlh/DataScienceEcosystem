@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RT CSE Arcade</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script defer src="script.js"></script>
+</head>
+<body>
+  <div class="page">
+    <header class="nav">
+      <div class="nav__logo">
+        <div class="logo">
+          <span>RT</span>
+        </div>
+        <span class="nav__title">RT CSE Arcade</span>
+      </div>
+      <nav class="nav__links">
+        <a href="#features">Features</a>
+        <a href="#how">How it works</a>
+        <a href="#ai">AI Tutor</a>
+        <a href="#palette">Brand</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="btn btn--ghost">Log in</button>
+        <a class="btn btn--primary" href="#simulation" id="nav-start">Start free</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" id="top">
+        <div class="hero__content">
+          <h1>Pass the NBRC Clinical Simulation Exam — but make it fun.</h1>
+          <p class="hero__subtitle">Real CSE-style branching, harmful/beneficial scoring, randomized vitals, AI tutor guide, and a cloud‑tap mini‑game for orders and assessments.</p>
+          <div class="hero__actions">
+            <a class="btn btn--accent" id="cta-start" href="#simulation">Start a free case</a>
+            <a class="btn btn--outline" href="#features">Explore features</a>
+          </div>
+          <p class="hero__note">No credit card required • Built for students, new grads, and working RTs</p>
+        </div>
+        <div class="hero__mock">
+          <div class="mock">
+            <div class="mock__header">
+              <span>Case: Febrile COPD Exacerbation</span>
+              <div class="mock__meta">
+                <button class="chip chip--pink" id="mock-ai">Ask AI</button>
+                <span class="chip">Time: <span id="mock-clock">09:54</span></span>
+              </div>
+            </div>
+            <div class="mock__vitals" id="mock-vitals"></div>
+            <div class="mock__clouds">
+              <div class="cloud" data-good style="--x:18%; --y:20%; --delay:0s; --duration:7s">Sputum culture</div>
+              <div class="cloud" data-good style="--x:62%; --y:44%; --delay:0.35s; --duration:6.5s">Start BiPAP</div>
+              <div class="cloud" data-bad style="--x:38%; --y:57%; --delay:0.15s; --duration:6.8s">Intubate now</div>
+              <div class="cloud" data-good style="--x:74%; --y:30%; --delay:0.75s; --duration:7.2s">Increase FiO₂ to 40%</div>
+              <div class="timer">
+                <div class="timer__bar"></div>
+              </div>
+            </div>
+            <div class="mock__footer">
+              <div class="mock__status">
+                <span>Phase: Assessment</span>
+                <span>Score: ★★★★☆</span>
+                <span>Branch 2 → 3</span>
+              </div>
+              <div class="mock__buttons">
+                <button class="chip">History</button>
+                <button class="chip">Orders</button>
+                <button class="chip">Labs</button>
+                <button class="chip chip--pink" id="mock-ai-alt">Ask AI</button>
+              </div>
+            </div>
+          </div>
+          <p class="hero__caption">Interactive mock — cloud‑tap answers + timer. Click <strong>Ask AI</strong> to open side panel.</p>
+        </div>
+      </section>
+
+      <section class="stats">
+        <div class="stat">
+          <div class="stat__value">12,438</div>
+          <div class="stat__label">Active RTs</div>
+        </div>
+        <div class="stat">
+          <div class="stat__value">+18%</div>
+          <div class="stat__label">Avg. pass boost</div>
+        </div>
+        <div class="stat">
+          <div class="stat__value">120+</div>
+          <div class="stat__label">Cases</div>
+        </div>
+        <div class="stat">
+          <div class="stat__value">18 min/day</div>
+          <div class="stat__label">Avg. study time</div>
+        </div>
+      </section>
+
+      <section class="features" id="features">
+        <div class="section__header">
+          <h2>Everything you need for the CSE</h2>
+          <p>Grounded in real clinical reasoning—no fluff, no recycled trivia. Learn by doing, with immediate feedback that mirrors the actual scoring model.</p>
+        </div>
+        <div class="feature-grid" id="feature-grid"></div>
+      </section>
+
+      <section class="how" id="how">
+        <div class="step">
+          <div class="step__n">1</div>
+          <h3>Pick a case</h3>
+          <p>Choose difficulty or hit Random for a true exam vibe.</p>
+        </div>
+        <div class="step">
+          <div class="step__n">2</div>
+          <h3>Tap smart, not fast</h3>
+          <p>Cloud answers float up—grab indicated actions, avoid harmful ones.</p>
+        </div>
+        <div class="step">
+          <div class="step__n">3</div>
+          <h3>Review &amp; repeat</h3>
+          <p>Get rationale, see hidden scores, and reinforce with spaced repetition.</p>
+        </div>
+      </section>
+
+      <section class="ai" id="ai">
+        <div class="ai__avatar"></div>
+        <h2>Meet Your Arcade Guide</h2>
+        <p>Tap <em>Ask AI</em> during a case to open the side panel. The AI Tutor gives rationales, hints, vent strategies, and explains harmful vs. beneficial logic.</p>
+      </section>
+
+      <section class="palette" id="palette">
+        <h2>Brand palette</h2>
+        <p>Quick color chips—swap as needed. Buttons use Indigo; accents use Sky/Emerald/Amber.</p>
+        <div class="palette__grid" id="palette-grid"></div>
+      </section>
+
+      <section class="faq" id="faq">
+        <h2>FAQ</h2>
+        <div class="faq__grid">
+          <details>
+            <summary>Is this aligned to the NBRC CSE blueprint?</summary>
+            <p>Yes—case domains map to assessment/implementation phases and tested competencies.</p>
+          </details>
+          <details>
+            <summary>Can I practice harmful vs beneficial logic?</summary>
+            <p>Every choice is tagged with hidden scoring that mirrors indicated/not‑indicated outcomes.</p>
+          </details>
+          <details>
+            <summary>Do you randomize vitals?</summary>
+            <p>Key vitals and labs vary within safe ranges to keep repetitions meaningful.</p>
+          </details>
+          <details>
+            <summary>Will this help with vents and ABGs?</summary>
+            <p>Yes—boss cases emphasize ventilator strategy, weaning, and ABG interpretation.</p>
+          </details>
+        </div>
+      </section>
+
+      <section class="simulation" id="simulation">
+        <div class="section__header section__header--center">
+          <h2>Free Case: Febrile COPD Exacerbation</h2>
+          <p>NBRC-style IG &amp; DM tasks. Credit / neutral / penalty scoring. Harmful actions can terminate the case.</p>
+        </div>
+        <div class="sim">
+          <aside class="sim__sidebar">
+            <div class="sim__panel">
+              <h3>Patient Snapshot</h3>
+              <p class="sim__summary">67-year-old with GOLD stage III COPD presents with fever, productive cough, and dyspnea. EMS reports increased work of breathing and use of home oxygen.</p>
+              <div class="sim__vitals" id="sim-vitals"></div>
+              <div class="sim__notes" id="sim-flags"></div>
+            </div>
+            <div class="sim__panel">
+              <h3>Arcade Score</h3>
+              <ul class="scoreboard">
+                <li>Total score <span id="score-total">0</span></li>
+                <li>IG tasks <span id="score-ig">0/0</span></li>
+                <li>DM tasks <span id="score-dm">0/0</span></li>
+                <li>Status <span id="score-status">Awaiting start</span></li>
+              </ul>
+              <button class="btn btn--primary btn--full" id="reset-case">Reset case</button>
+            </div>
+            <div class="sim__panel">
+              <h3>AI Tutor</h3>
+              <p class="ai__text">Need a nudge? Open the AI Tutor for contextual hints and rationales.</p>
+              <button class="btn btn--accent btn--full" id="open-ai">Ask AI</button>
+            </div>
+          </aside>
+          <section class="sim__main">
+            <div class="sim__phase" id="sim-phase">Press “Start a free case” to begin.</div>
+            <div class="sim__card" id="sim-card" hidden>
+              <div class="sim__card-header">
+                <div>
+                  <div class="sim__phase-label" id="sim-task"></div>
+                  <h3 id="sim-question"></h3>
+                </div>
+                <div class="sim__progress">
+                  <div class="progress"><div class="progress__bar" id="progress-bar"></div></div>
+                  <span id="progress-text"></span>
+                </div>
+              </div>
+              <p class="sim__prompt" id="sim-prompt"></p>
+              <div class="sim__clouds" id="option-grid"></div>
+              <div class="sim__actions">
+                <button class="btn btn--ghost" id="show-tutor">Ask AI</button>
+                <div class="sim__action-group">
+                  <button class="btn btn--outline" id="clear-selection">Clear</button>
+                  <button class="btn btn--primary" id="submit-step" disabled>Submit</button>
+                </div>
+              </div>
+            </div>
+            <div class="sim__results" id="sim-results" hidden></div>
+          </section>
+        </div>
+      </section>
+
+      <section class="cta">
+        <h2>Ready to level up your CSE prep?</h2>
+        <p>Jump into a free case. If it clicks, unlock the full bank anytime.</p>
+        <div class="cta__form">
+          <input type="email" placeholder="Email for updates" />
+          <button class="btn btn--success">Get early access</button>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer__brand">
+        <div class="logo logo--sm"><span>RT</span></div>
+        <span>© <span id="footer-year"></span> RT CSE Arcade</span>
+      </div>
+      <div class="footer__links">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Contact</a>
+      </div>
+    </footer>
+  </div>
+
+  <div class="ai-panel" id="ai-panel" aria-hidden="true">
+    <div class="ai-panel__dialog" role="dialog" aria-modal="true">
+      <div class="ai-panel__header">
+        <div class="ai-panel__avatar"></div>
+        <div>
+          <h3>Arcade Tutor</h3>
+          <p id="ai-panel-context">Clinical reasoning tips appear here.</p>
+        </div>
+        <button class="btn btn--ghost" id="close-ai">Close</button>
+      </div>
+      <div class="ai-panel__body" id="ai-panel-body"></div>
+    </div>
+  </div>
+</body>
+</html>

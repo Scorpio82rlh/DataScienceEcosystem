@@ -1,0 +1,11 @@
+{
+  "name": "rt-cse-arcade",
+  "version": "1.0.0",
+  "description": "Static NBRC clinical simulation arcade case built with vanilla JS",
+  "scripts": {
+    "start": "python -m http.server 3000",
+    "test": "echo \"No automated tests configured\""
+  },
+  "author": "",
+  "license": "MIT"
+}

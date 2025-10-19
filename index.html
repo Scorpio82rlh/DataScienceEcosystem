@@ -54,19 +54,16 @@
             </div>
             <div class="mock__vitals" id="mock-vitals"></div>
             <div class="mock__clouds">
-              <div class="cloud" data-good style="--x:18%; --y:20%; --delay:0s; --duration:7s">Sputum culture</div>
-              <div class="cloud" data-good style="--x:62%; --y:44%; --delay:0.35s; --duration:6.5s">Start BiPAP</div>
-              <div class="cloud" data-bad style="--x:38%; --y:57%; --delay:0.15s; --duration:6.8s">Intubate now</div>
-              <div class="cloud" data-good style="--x:74%; --y:30%; --delay:0.75s; --duration:7.2s">Increase FiO₂ to 40%</div>
-              <div class="timer">
+              <div class="mock__clouds-inner" id="hero-clouds"></div>
+              <div class="timer" aria-hidden="true">
                 <div class="timer__bar"></div>
               </div>
             </div>
             <div class="mock__footer">
-              <div class="mock__status">
-                <span>Phase: Assessment</span>
-                <span>Score: ★★★★☆</span>
-                <span>Branch 2 → 3</span>
+              <div class="mock__status" id="hero-status" aria-live="polite">
+                <span id="hero-phase">Tap indicated orders to earn credit.</span>
+                <span id="hero-score">Score: 0 pts</span>
+                <span id="hero-branch">Clouds cleared 0/0</span>
               </div>
               <div class="mock__buttons">
                 <button class="chip">History</button>

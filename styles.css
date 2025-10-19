@@ -267,36 +267,73 @@ body {
 
 .mock__clouds {
   position: relative;
-  min-height: 220px;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
+  min-height: 240px;
+  padding: 0.75rem 0.75rem 3.5rem;
   overflow: hidden;
 }
 
+.mock__clouds-inner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+  align-items: flex-end;
+}
+
 .cloud {
-  position: absolute;
-  padding: 0.6rem 1.1rem;
+  position: relative;
+  padding: 0.65rem 1.2rem;
   border-radius: 999px;
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   border: 1px solid rgba(255, 255, 255, 0.2);
   background: rgba(59, 130, 246, 0.2);
-  color: rgba(226, 232, 240, 0.9);
+  color: rgba(226, 232, 240, 0.92);
   animation: floatUp var(--duration, 6.5s) ease-in-out infinite;
   animation-delay: var(--delay, 0s);
-  left: var(--x, 50%);
-  bottom: var(--y, 18%);
-  transform: translateX(-50%);
+  animation-direction: alternate;
+  min-width: 9.5rem;
+  flex: 1 1 9.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  backdrop-filter: blur(4px);
 }
 
-.cloud[data-good] {
-  background: rgba(16, 185, 129, 0.22);
-  border-color: rgba(16, 185, 129, 0.35);
+.cloud:focus-visible {
+  outline: 2px solid rgba(56, 189, 248, 0.75);
+  outline-offset: 2px;
 }
 
-.cloud[data-bad] {
+.cloud:not([disabled]):hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 38px rgba(56, 189, 248, 0.24);
+}
+
+.cloud[disabled] {
+  cursor: not-allowed;
+  opacity: 0.88;
+}
+
+.cloud[data-tag="beneficial"] {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: rgba(16, 185, 129, 0.32);
+}
+
+.cloud[data-tag="harmful"] {
   background: rgba(248, 113, 113, 0.22);
-  border-color: rgba(248, 113, 113, 0.35);
+  border-color: rgba(248, 113, 113, 0.36);
+}
+
+.cloud[data-state="correct"] {
+  border-color: rgba(16, 185, 129, 0.55);
+  box-shadow: 0 16px 36px rgba(16, 185, 129, 0.26);
+  background: rgba(16, 185, 129, 0.28);
+}
+
+.cloud[data-state="wrong"] {
+  border-color: rgba(248, 113, 113, 0.55);
+  box-shadow: 0 16px 36px rgba(248, 113, 113, 0.24);
+  background: rgba(248, 113, 113, 0.28);
 }
 
 
@@ -310,6 +347,7 @@ body {
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.12);
   overflow: hidden;
+  pointer-events: none;
 }
 
 .timer__bar {
@@ -818,6 +856,17 @@ body {
   }
   50% {
     transform: translateY(calc(var(--float-distance, 12px) * -1));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cloud,
+  .option-cloud,
+  .timer__bar,
+  .mock__clouds .timer__bar,
+  .option-cloud::after {
+    animation: none !important;
+    transition: none !important;
   }
 }
 

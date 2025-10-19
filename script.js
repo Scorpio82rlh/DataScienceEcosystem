@@ -17,6 +17,26 @@ const featureList = [
   { icon: "🏆", title: "Badges & Streaks", desc: "Build confidence with streak bonuses and mastery milestones." }
 ];
 
+const heroCloudOptions = [
+  { id: "hero-sputum", label: "Sputum culture", tag: "beneficial" },
+  { id: "hero-bipap", label: "Start BiPAP", tag: "beneficial" },
+  { id: "hero-intubate", label: "Intubate now", tag: "harmful" },
+  { id: "hero-fio2", label: "Increase FiO₂ to 40%", tag: "beneficial" }
+];
+
+const heroTotals = {
+  total: heroCloudOptions.length,
+  beneficial: heroCloudOptions.filter(option => option.tag === "beneficial").length
+};
+
+const heroState = {
+  score: 0,
+  cleared: 0,
+  lastMessage: ""
+};
+
+let heroResetTimer = null;
+
 const vitalTemplates = [
   { key: "SpO₂", unit: "%", range: [86, 89], trend: "critical" },
   { key: "Respiratory Rate", unit: "breaths/min", range: [26, 32], trend: "up" },
@@ -886,6 +906,86 @@ function playFeedbackSound(type) {
   osc.stop(stopAt);
 }
 
+function updateHeroStatus() {
+  const phase = document.getElementById("hero-phase");
+  const score = document.getElementById("hero-score");
+  const branch = document.getElementById("hero-branch");
+  const message = heroState.lastMessage || "Tap indicated orders to earn credit.";
+  if (phase) phase.textContent = message;
+  if (score) {
+    score.textContent = `Score: ${heroState.score > 0 ? "+" : ""}${heroState.score} pts`;
+  }
+  if (branch) {
+    branch.textContent = `Clouds cleared ${heroState.cleared}/${heroTotals.total} • Goal: ${heroTotals.beneficial} credits`;
+  }
+}
+
+function handleHeroSelection(option, button) {
+  if (button.disabled) return;
+  button.disabled = true;
+  button.setAttribute("aria-pressed", "true");
+  heroState.cleared += 1;
+  if (option.tag === "beneficial") {
+    heroState.score += 1;
+    heroState.lastMessage = `Credit: ${option.label}`;
+    button.dataset.state = "correct";
+    playFeedbackSound("success");
+  } else {
+    heroState.score -= 1;
+    heroState.lastMessage = `Penalty: ${option.label}`;
+    button.dataset.state = "wrong";
+    playFeedbackSound("harm");
+  }
+  updateHeroStatus();
+  if (heroState.cleared >= heroTotals.total) {
+    heroState.lastMessage = "All clouds reviewed! Resetting...";
+    updateHeroStatus();
+    if (heroResetTimer) clearTimeout(heroResetTimer);
+    heroResetTimer = setTimeout(() => initHeroGame(), 2400);
+  }
+}
+
+function initHeroGame() {
+  if (heroResetTimer) {
+    clearTimeout(heroResetTimer);
+    heroResetTimer = null;
+  }
+  heroState.score = 0;
+  heroState.cleared = 0;
+  heroState.lastMessage = "Tap indicated orders to earn credit.";
+  const container = document.getElementById("hero-clouds");
+  if (!container) {
+    updateHeroStatus();
+    return;
+  }
+  container.innerHTML = "";
+  const prefersReducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const order = heroCloudOptions.slice().sort(() => Math.random() - 0.5);
+  order.forEach((option, index) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "cloud";
+    button.dataset.tag = option.tag;
+    button.dataset.optionId = option.id;
+    button.textContent = option.label;
+    button.disabled = false;
+    button.removeAttribute("data-state");
+    button.setAttribute("aria-pressed", "false");
+    const delay = (Math.random() * 1.35).toFixed(2);
+    const duration = (6 + Math.random() * 2.4).toFixed(2);
+    const distance = (10 + Math.random() * 10).toFixed(0);
+    button.style.setProperty("--delay", `${delay}s`);
+    button.style.setProperty("--duration", `${duration}s`);
+    button.style.setProperty("--float-distance", `${distance}px`);
+    if (prefersReducedMotion) {
+      button.style.animation = "none";
+    }
+    button.addEventListener("click", () => handleHeroSelection(option, button));
+    container.appendChild(button);
+  });
+  updateHeroStatus();
+}
+
 function toggleOption(card) {
   if (!state.active || !state.currentStep) return;
   if (card.disabled) return;
@@ -1240,6 +1340,7 @@ function startCase() {
   const vitals = buildVitals();
   renderVitalsSidebar(vitals);
   renderMockVitals(vitals);
+  initHeroGame();
   setPhaseLabel("Phase: Assessment");
   const results = document.getElementById("sim-results");
   if (results) results.hidden = true;
@@ -1259,6 +1360,7 @@ function initialize() {
   hasInitialized = true;
   const vitals = buildVitals();
   renderMockVitals(vitals);
+  initHeroGame();
   renderPalette();
   renderFeatures();
   const footerYear = document.getElementById("footer-year");

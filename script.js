@@ -829,14 +829,61 @@ function setProgress() {
 function clearOptions() {
   state.selected.clear();
   const grid = document.getElementById("option-grid");
-  grid.querySelectorAll(".option-card").forEach(card => {
-    card.classList.remove("selected");
-    card.removeAttribute("data-status");
-    card.removeAttribute("data-status-label");
-    card.disabled = false;
-    card.setAttribute("aria-pressed", "false");
-  });
+  if (grid) {
+    grid.querySelectorAll(".option-cloud").forEach(card => {
+      card.classList.remove("selected");
+      card.removeAttribute("data-status");
+      card.removeAttribute("data-status-label");
+      card.disabled = false;
+      card.setAttribute("aria-pressed", "false");
+    });
+  }
   document.getElementById("submit-step").disabled = true;
+}
+
+let audioCtx = null;
+
+function ensureAudioContext() {
+  if (typeof window === "undefined") return null;
+  if (!("AudioContext" in window || "webkitAudioContext" in window)) return null;
+  if (!audioCtx) {
+    const Ctor = window.AudioContext || window.webkitAudioContext;
+    try {
+      audioCtx = new Ctor();
+    } catch (err) {
+      audioCtx = null;
+    }
+  }
+  return audioCtx;
+}
+
+function playFeedbackSound(type) {
+  const ctx = ensureAudioContext();
+  if (!ctx) return;
+  if (ctx.state === "suspended") {
+    ctx.resume().catch(() => {});
+  }
+  const now = ctx.currentTime;
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  const isSuccess = type === "success";
+  osc.type = isSuccess ? "sine" : "triangle";
+  const baseFreq = isSuccess ? 640 : 220;
+  osc.frequency.setValueAtTime(baseFreq, now);
+  if (isSuccess) {
+    osc.frequency.linearRampToValueAtTime(baseFreq * 1.15, now + 0.18);
+  } else {
+    osc.frequency.linearRampToValueAtTime(baseFreq * 0.7, now + 0.18);
+  }
+  gain.gain.setValueAtTime(0.0001, now);
+  const peak = isSuccess ? 0.08 : 0.045;
+  gain.gain.exponentialRampToValueAtTime(peak, now + 0.02);
+  const stopAt = now + (isSuccess ? 0.45 : 0.3);
+  gain.gain.exponentialRampToValueAtTime(0.0001, stopAt);
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.start(now);
+  osc.stop(stopAt);
 }
 
 function toggleOption(card) {
@@ -844,7 +891,7 @@ function toggleOption(card) {
   if (card.disabled) return;
   const optionId = card.dataset.optionId;
   if (!state.currentStep.allowMultiple) {
-    document.querySelectorAll(".option-card.selected").forEach(el => {
+    document.querySelectorAll(".option-cloud.selected").forEach(el => {
       if (el === card) return;
       el.classList.remove("selected");
       el.setAttribute("aria-pressed", "false");
@@ -862,6 +909,16 @@ function toggleOption(card) {
       state.selected.add(optionId);
       card.classList.add("selected");
       card.setAttribute("aria-pressed", "true");
+    }
+  }
+  if (state.selected.has(optionId)) {
+    const option = state.currentStep.options.find(o => o.id === optionId);
+    if (option) {
+      if (option.tag === "harmful") {
+        playFeedbackSound("harm");
+      } else if (option.tag === "beneficial") {
+        playFeedbackSound("success");
+      }
     }
   }
   document.getElementById("submit-step").disabled = state.selected.size === 0;
@@ -899,18 +956,25 @@ function renderStep(stepId) {
   resolved.options.forEach(option => {
     const card = document.createElement("button");
     card.type = "button";
-    card.className = "option-card";
+    card.className = "option-cloud";
     card.dataset.optionId = option.id;
+    card.dataset.tag = option.tag || "neutral";
     card.disabled = false;
     card.setAttribute("aria-pressed", "false");
-    const tag = document.createElement("div");
-    tag.className = "option-card__tag";
-    tag.textContent = option.group || (resolved.type === "IG" ? "IG" : "DM");
-    const text = document.createElement("div");
-    text.className = "option-card__text";
+    const hint = document.createElement("span");
+    hint.className = "option-cloud__tag";
+    hint.textContent = option.group || (resolved.type === "IG" ? "IG" : "DM");
+    const text = document.createElement("span");
+    text.className = "option-cloud__text";
     text.textContent = option.label;
-    card.appendChild(tag);
+    card.appendChild(hint);
     card.appendChild(text);
+    const delay = (Math.random() * 1.5).toFixed(2);
+    const duration = (5.5 + Math.random() * 2.5).toFixed(2);
+    const distance = (8 + Math.random() * 8).toFixed(0);
+    card.style.setProperty("--float-delay", `${delay}s`);
+    card.style.setProperty("--float-duration", `${duration}s`);
+    card.style.setProperty("--float-distance", `${distance}px`);
     card.addEventListener("click", () => toggleOption(card));
     grid.appendChild(card);
   });
@@ -923,7 +987,7 @@ function evaluateStep() {
   let delta = 0;
   let fatal = false;
   const optionElements = {};
-  document.querySelectorAll(".option-card").forEach(card => {
+  document.querySelectorAll(".option-cloud").forEach(card => {
     optionElements[card.dataset.optionId] = card;
   });
 
